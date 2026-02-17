@@ -225,11 +225,14 @@ ggplot(data = asia_major, # data for plot
 #by side. Plot world CO emissions on one graph and world air temperature anomalies on the other
 #graph.
 
+install.packages("patchwork")
+library(patchwork)
+
 datCO2 <- datCO2 %>%
   arrange(Year) %>%
   mutate(world_co2 = cumsum(CO2))
 
-ggplot(datCO2, aes(x = Year, y = world_co2)) +
+co2_graph <-ggplot(datCO2, aes(x = Year, y = world_co2)) +
   geom_line(size = 1) +
   theme_classic() +
   labs(x = "Year",
@@ -239,7 +242,7 @@ ggplot(datCO2, aes(x = Year, y = world_co2)) +
 
 world_temp <- data[data$Entity == "World",]
 world_temp$Day <- ymd(world_temp$Day)
-ggplot(data = world_temp, # data for plot
+temp_graph <- ggplot(data = world_temp, # data for plot
        aes(x = Day, y=temperature_anomaly ) )+ # aes, x and y
   geom_point()+ # make points at data point
   geom_line()+ # use lines to connect data points
@@ -247,6 +250,24 @@ ggplot(data = world_temp, # data for plot
        title="World Temperature Anomalies")+ # make axis labels
   theme_classic()
 
+co2_graph + temp_graph
+
+#Question 3.
+#Look up any type of environmental data of your interest in our world in data (link in tutorial).
+#Download the csv and upload it to RStudio Cloud. Remake the graph. You may make the graph exactly
+#as it is or alter it to present the data in a different format. Explain how you considered principles of
+#visualization in making your graph. Explain the main conclusion of the graph
+
+energy <- read.csv("/cloud/project/activity03/electricity-prod-source-stacked.csv")
+
+energy$total <- rowSums(energy[,-c(1,2,3)])
+energy$nuclear_per <- energy$Nuclear / energy$total
+
+ggplot(energy, aes(x = Year, y = nuclear_per)) +
+  geom_area(fill = "blue", alpha = 0.7) +
+  labs(title="Nuclear as Percentage of All Energy",
+       y="Percentage")+
+  theme_classic()
 
 
 
