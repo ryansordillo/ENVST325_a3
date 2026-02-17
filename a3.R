@@ -188,14 +188,16 @@ ggplot(data = data_no_world, # data for plot
 
 #Question 2: Plot the total all time emissions for the United States, Mexico, and Canada.
 
-ggplot(data = NorthA, # data for plot
-       aes(x = Year, y=CO2, color=Entity ) )+ # aes, x and y
-  geom_point()+ # make points at data point
-  geom_line()+ # use lines to connect data points
-  labs(x="Year", y=expression("Fossil fuel emissions (tons CO"[2]*")"))+ # make axis labels
-  theme_classic()+
-  scale_color_manual(values = c("#7FB3D555","#34495E55", "#E7B80055"))
+#Make cumulative CO2 emissions by country
+NorthA <- NorthA %>%
+  group_by(Entity) %>%
+  mutate(cum_CO2 = cumsum(CO2))
 
+ggplot(NorthA, aes(x = Year, y = cum_CO2, color = Entity)) +
+  geom_line(size = 1) +
+  theme_classic() +
+  labs(x = "Year",
+       y = expression("Cumulative emissions (tons " * CO[2] * ")"))
 
 
 #HW 3:
