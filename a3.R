@@ -199,7 +199,6 @@ ggplot(NorthA, aes(x = Year, y = cum_CO2, color = Entity)) +
   labs(x = "Year",
        y = expression("Cumulative emissions (tons " * CO[2] * ")"))
 
-
 #HW 3:
 
 #Question 1:
@@ -207,14 +206,46 @@ ggplot(NorthA, aes(x = Year, y = cum_CO2, color = Entity)) +
 #you considered principles of visualization in making your graph.
 
 #Looking at China CO2 Emissions:
-china <- datCO2[datCO2$Entity == "China",]
-ggplot(data = china, # data for plot
-       aes(x = Year, y=CO2 ) )+ # aes, x and y
+asia_major <- datCO2[datCO2$Entity == "China" |
+                       datCO2$Entity == "Russia" |
+                       datCO2$Entity == "India",]
+ggplot(data = asia_major, # data for plot
+       aes(x = Year, y=CO2, color=Entity ) )+ # aes, x and y
   geom_point()+ # make points at data point
   geom_line()+ # use lines to connect data points
-  labs(x="Year", y=expression("Fossil fuel emissions (tons CO"[2]*")"))+
-  theme_classic()
+  labs(x="Year", 
+       y = expression(" Fossil Fuel Emissions (tons " * CO[2] * ")"), 
+       title="Carbon Emissions for Major Asia Countries")+ # make axis labels
+  theme_classic()+
+  scale_color_manual(values = c("#7FB3D555","#34495E55", "#E7B80055"))
 
+#2.
+#You are tasked with communicating the change in world air temperatures and CO emissions to a 
+#broad audience in visually appealing graphs. Make two graphs to present in your word document side
+#by side. Plot world CO emissions on one graph and world air temperature anomalies on the other
+#graph.
+
+datCO2 <- datCO2 %>%
+  arrange(Year) %>%
+  mutate(world_co2 = cumsum(CO2))
+
+ggplot(datCO2, aes(x = Year, y = world_co2)) +
+  geom_line(size = 1) +
+  theme_classic() +
+  labs(x = "Year",
+       y = expression("World Cumulative emissions (tons " * CO[2] * ")"),
+       title = "World Cumulative Emisisons")
+
+
+world_temp <- data[data$Entity == "World",]
+world_temp$Day <- ymd(world_temp$Day)
+ggplot(data = world_temp, # data for plot
+       aes(x = Day, y=temperature_anomaly ) )+ # aes, x and y
+  geom_point()+ # make points at data point
+  geom_line()+ # use lines to connect data points
+  labs(x="Year", y="World Temperature Anomaly(C)",
+       title="World Temperature Anomalies")+ # make axis labels
+  theme_classic()
 
 
 
