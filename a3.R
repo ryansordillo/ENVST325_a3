@@ -225,32 +225,30 @@ ggplot(data = asia_major, # data for plot
 #by side. Plot world CO emissions on one graph and world air temperature anomalies on the other
 #graph.
 
-install.packages("patchwork")
-library(patchwork)
 
-datCO2 <- datCO2 %>%
-  arrange(Year) %>%
-  mutate(world_co2 = cumsum(CO2))
+world_yearly <- datCO2 %>%
+  group_by(Year) %>%
+  summarise(total_co2 = sum(CO2))
 
-co2_graph <-ggplot(datCO2, aes(x = Year, y = world_co2)) +
+world_yearly$co2_mil <- world_yearly$total_co2 / 100000000
+
+ggplot(world_yearly, aes(x = Year, y = co2_mil)) +
   geom_line(size = 1) +
   theme_classic() +
   labs(x = "Year",
-       y = expression("World Cumulative emissions (tons " * CO[2] * ")"),
-       title = "World Cumulative Emisisons")
+       y = expression("World emissions (Hundred million tons " * CO[2] * ")"),
+       title = "World CO2 Emisisons")
 
 
 world_temp <- data[data$Entity == "World",]
 world_temp$Day <- ymd(world_temp$Day)
-temp_graph <- ggplot(data = world_temp, # data for plot
+ggplot(data = world_temp, # data for plot
        aes(x = Day, y=temperature_anomaly ) )+ # aes, x and y
   geom_point()+ # make points at data point
-  geom_line()+ # use lines to connect data points
   labs(x="Year", y="World Temperature Anomaly(C)",
        title="World Temperature Anomalies")+ # make axis labels
   theme_classic()
 
-co2_graph + temp_graph
 
 #Question 3.
 #Look up any type of environmental data of your interest in our world in data (link in tutorial).
