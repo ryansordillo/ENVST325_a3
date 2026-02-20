@@ -209,12 +209,13 @@ ggplot(NorthA, aes(x = Year, y = cum_CO2, color = Entity)) +
 asia_major <- datCO2[datCO2$Entity == "China" |
                        datCO2$Entity == "Russia" |
                        datCO2$Entity == "India",]
+asia_major$co2mil <- asia_major$CO2 / 1000000
 ggplot(data = asia_major, # data for plot
-       aes(x = Year, y=CO2, color=Entity ) )+ # aes, x and y
+       aes(x = Year, y=co2mil, color=Entity ) )+ # aes, x and y
   geom_point()+ # make points at data point
   geom_line()+ # use lines to connect data points
   labs(x="Year", 
-       y = expression(" Fossil Fuel Emissions (tons " * CO[2] * ")"), 
+       y = expression(" Fossil Fuel Emissions (million tons " * CO[2] * ")"), 
        title="Carbon Emissions for Major Asia Countries")+ # make axis labels
   theme_classic()+
   scale_color_manual(values = c("#7FB3D555","#34495E55", "#E7B80055"))
